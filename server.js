@@ -50,22 +50,34 @@ app.get('/api/notes', (req, res) => {
 
 // `POST /api/notes` should receive a new note to save on the request body, add it to the `db.json` file, and then return the new note to the client.
 app.post('/api/notes', (req, res) => {
-    let response;
-    if(req.body && req.body.title && req.body.text) {
-        response = {
-            status: 'success',
-            data: req.body,
+    console.info(`${req.method} request received to add a note`);
+    const { title, text } = req.body;
+    if (title && text) {
+        var newNote = {
+            title,
+            text,
         };
-        res.json({response});
-        console.log("post api notes - line 48")
+        fs.readFile('./db/db.json', 'utf8', (err, data) => {
+            if (err) {
+                console.error(err);
+                } else {
+                    const parsedNotes = JSON.parse(data);
+                    parsedNotes.push(newNote);
+                    fs.writeFile('./db/db.json', JSON.stringify(parsedNotes, null, 4), (writeErr) =>
+                    writeErr ? console.error(writeErr) : console.info('Successfully updated notes!')
+                    );
+                }
+            }
+            );
+        console.log(newNote.title + " " + newNote.text + " " + "line 72");
+        res.json(`Note added successfully 🚀`);
+        console.log("post api notes - line 74")
         } else {
-            res.json(`error - no data received`);
-    fs.writeFile('./db/db.json', JSON.stringify(termData), (err) => {
-        if (err) throw err;
-        console.log('The file has been saved!');
-        }
-    );
-}
+            res.json(`Error in adding note`);
+            console.log("error in adding note - line 77")
+    }
+
+
 });
 
 app.listen(PORT, () => {
