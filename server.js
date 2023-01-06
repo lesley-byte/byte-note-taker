@@ -2,7 +2,7 @@ const express = require('express');
 const path = require('path');
 const { clog } = require('./middleware/clog');
 const termData = require('./db/db.json');
-
+const api = require('./routes/index.js')
 const PORT = process.env.port || 3001;
 
 const app = express();
@@ -35,16 +35,17 @@ app.get('*', (req, res) => {
 
 // `GET /api/notes` should read the `db.json` file and return all saved notes as JSON.
 app.get('/api/notes', (req, res) => {
-    if(req.body && req.body.title && req.body.text) {
-        response = {
-            status: 'success',
-            data: req.body,
-        };
-        res.json({response});
-        console.log("post api notes - line 48")
-        } else {
-            res.json(`error - no data received`);
-    }
+    console.log("getting api notes lesley-log")
+    fs.readFile('./db/db.json', 'utf8', (err, data) => {
+        if (err) {
+            console.error(err);
+            } else {
+                console.log("parsed data: " + data)
+                res.json(JSON.parse(data));
+            }
+        }
+        );
+
 }
     );
 
