@@ -14,7 +14,7 @@ notes.get("/", (req, res) => {
 
 // GET Route for a specific note
 notes.get("/:note_id", (req, res) => {
-  const noteId = req.params.id;
+  const noteId = req.params.note_id;
   console.log(noteId);
   readFromFile("./db/db.json")
     .then((data) => JSON.parse(data))
